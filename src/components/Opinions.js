@@ -154,30 +154,59 @@ const Item = ({reaction}) => {
     )
 }
 
+const DELETE_REACTION = gql`
+    mutation($reaction:ID!){
+        deleteReaction(reactionId:$reaction){
+            _id
+            user{
+                _id
+                name
+            }
+            kind
+            data
+        }
+    }
+`;
+
 const Like = ({reaction}) => {
     const [addReaction, {data, loading, error}] = useMutation(CREATE_OPINION);
-    const [liked, setLiked] = useState(reaction?.mylike ?? false)
+    const [deleteReaction, {loading: deleteLoading}] = useMutation(DELETE_REACTION);
+    const [liked, setLiked] = useState(reaction?.reactions?.mylike ?? false)
+    const [count, setCount] = useState(reaction?.reactions?.likes?.totalDocs ?? '')
     const submitForm = (e) => {
         e.preventDefault();
-        addReaction({
-            variables: {
-                kind: "like",
-                reaction: reaction?._id
-            }
-        })
-            .then(({data}) => {
-                console.log(data)
+        if (liked) {
+            deleteReaction({variables: {reaction: reaction?._id}})
+                .then(({data}) => {
+                    setLiked(false);
+                    setCount(p => p - 1);
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        } else {
+            addReaction({
+                variables: {
+                    kind: "like",
+                    reaction: reaction?._id
+                }
             })
-            .catch(e => {
-                console.log(e)
-            })
+                .then(({data}) => {
+                    console.log(data)
+                    setLiked(true)
+                    setCount(p => p + 1);
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        }
     }
     return (
         <Box>
-            <IconButton onClick={submitForm}>
+            <IconButton onClick={submitForm} disabled={loading || deleteLoading}>
                 <ThumbUpIcon color={!liked ? '' : 'secondary'}/>
             </IconButton>
-            {reaction?.reactions?.likes?.totalDocs}
+            {count && count > 0 ? count : ''}
         </Box>
     )
 }
