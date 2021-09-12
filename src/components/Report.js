@@ -68,6 +68,12 @@ const useStyles = makeStyles((theme) => ({
         color: 'grey',
         fontSize: 13,
         fontWeight: '300'
+    },
+    optionItem: {
+        borderRadius: 10,
+        backgroundColor: '#fdfaf1',
+        margin: "2px 0",
+        padding: "10px 10px"
     }
 }));
 const Report = ({reaction}) => {
@@ -86,16 +92,17 @@ const Report = ({reaction}) => {
         })
             .then(({data}) => {
                 console.log(data)
+                setOpen(false)
             })
             .catch(e => {
                 console.log(e)
             })
     }
-    const reportOptions = ['Spam','Contains hate speech'];
+    const reportOptions = ['Spam', 'Contains hate speech'];
     return (
         <Box display={"flex"} p={1}>
             <IconButton onClick={() => setOpen(true)}>
-                <ReportProblemRoundedIcon/>
+                <ReportProblemRoundedIcon fontSize={"small"}/>
             </IconButton>
             <Dialog
                 fullScreen={true}
@@ -109,7 +116,7 @@ const Report = ({reaction}) => {
                             <CloseIcon/>
                         </IconButton>
                         <Typography>Report Comment</Typography>
-                        <Button onClick={submitForm} className={classes.postBtn}>
+                        <Button onClick={submitForm} className={classes.postBtn} disabled={selected?.length <= 0}>
                             Post
                         </Button>
                     </Box>
@@ -124,12 +131,15 @@ const Report = ({reaction}) => {
                         {/*>*/}
                         {/*    <Typography className={classes.heading}>What do you support?</Typography>*/}
                         {/*</AccordionSummary>*/}
-                        <AccordionDetails>
-                            <Box display={"flex"} flexDirection={"column"}>
-                                {reportOptions?.map((r, key)=>{
-                                    return <Typography onClick={() => setSelected(r)} key={key}>
-                                        {r}
-                                    </Typography>
+                        <AccordionDetails style={{padding: 0}}>
+                            <Box display={"flex"} flexDirection={"column"} width={"100%"}>
+                                {reportOptions?.map((r, key) => {
+                                    return <Box key={key} className={classes.optionItem}
+                                                style={{backgroundColor: selected === r ? '#f1ebff' : '#fdfaf1'}}>
+                                        <Typography onClick={() => setSelected(r)} key={key}>
+                                            {r}
+                                        </Typography>
+                                    </Box>
                                 })}
                             </Box>
 
