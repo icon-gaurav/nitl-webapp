@@ -6,6 +6,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import HomePage from "./components/HomePage";
 import NotificationProvider from "./components/context/notificationContext";
+import Header from "./components/Header";
 
 const cache = new InMemoryCache({
     typePolicies: {
@@ -36,6 +37,7 @@ function App() {
         <NotificationProvider>
             <ApolloProvider client={client}>
                 <AuthProvider>
+                    <Header/>
                     <Router style={{minHeight:'100vh'}}>
                         <Login path="/login"/>
                         <Register path="/register"/>

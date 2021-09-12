@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
     Accordion,
     AccordionDetails,
@@ -20,6 +20,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {gql, useMutation, useQuery} from "@apollo/client";
 import CloseIcon from '@material-ui/icons/Close';
 import Report from "./Report";
+import {AuthContext} from "./context/authContext";
 
 const useStyles = makeStyles((theme) => ({
     inputText: {
@@ -99,6 +100,14 @@ const OPINIONS = gql`
                             reports{
                                 totalDocs
                             }
+                            mylike{
+                                _id
+                                kind
+                                user{
+                                    _id
+                                    name
+                                }
+                            }
                         }
                     }
                 }
@@ -171,15 +180,18 @@ const DELETE_REACTION = gql`
 const Like = ({reaction}) => {
     const [addReaction, {data, loading, error}] = useMutation(CREATE_OPINION);
     const [deleteReaction, {loading: deleteLoading}] = useMutation(DELETE_REACTION);
+    const [mylike, setMylike] = useState(reaction?.reactions?.mylike)
     const [liked, setLiked] = useState(reaction?.reactions?.mylike ?? false)
     const [count, setCount] = useState(reaction?.reactions?.likes?.totalDocs ?? '')
+    const {isAuthenticated} = useContext(AuthContext);
     const submitForm = (e) => {
         e.preventDefault();
         if (liked) {
-            deleteReaction({variables: {reaction: reaction?._id}})
+            deleteReaction({variables: {reaction: mylike?._id}})
                 .then(({data}) => {
                     setLiked(false);
                     setCount(p => p - 1);
+                    setMylike(undefined)
                 })
                 .catch(e => {
                     console.log(e)
@@ -193,6 +205,7 @@ const Like = ({reaction}) => {
             })
                 .then(({data}) => {
                     console.log(data)
+                    setMylike(data?.createReaction)
                     setLiked(true)
                     setCount(p => p + 1);
                 })
@@ -204,7 +217,7 @@ const Like = ({reaction}) => {
     return (
         <Box>
             <IconButton onClick={submitForm} disabled={loading || deleteLoading}>
-                <ThumbUpIcon color={!liked ? '' : 'secondary'}/>
+                <ThumbUpIcon color={!liked || !isAuthenticated? '' : 'secondary'}/>
             </IconButton>
             {count && count > 0 ? count : ''}
         </Box>
