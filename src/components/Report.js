@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import {
     Accordion,
     AccordionDetails,
-    AccordionSummary,
     Box,
     Button,
     Dialog,
@@ -13,8 +12,9 @@ import {
     Typography
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ReportProblemRoundedIcon from '@material-ui/icons/ReportProblemRounded';
+import {useMutation} from "@apollo/client";
+import {CREATE_OPINION} from "./Opinions";
 
 const useStyles = makeStyles((theme) => ({
     inputText: {
@@ -70,16 +70,31 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: '300'
     }
 }));
-const Report = ({opinion}) => {
+const Report = ({reaction}) => {
     const [open, setOpen] = useState(false);
     const classes = useStyles();
+    const [addReaction, {data, loading, error}] = useMutation(CREATE_OPINION);
     const [selected, setSelected] = useState('');
     const submitForm = (e) => {
         e.preventDefault();
+        addReaction({
+            variables: {
+                reaction: reaction?._id,
+                kind: "report",
+                data: selected
+            }
+        })
+            .then(({data}) => {
+                console.log(data)
+            })
+            .catch(e => {
+                console.log(e)
+            })
     }
+    const reportOptions = ['Spam','Contains hate speech'];
     return (
         <Box display={"flex"} p={1}>
-            <IconButton Onclick={() => setOpen(true)}>
+            <IconButton onClick={() => setOpen(true)}>
                 <ReportProblemRoundedIcon/>
             </IconButton>
             <Dialog
@@ -93,7 +108,7 @@ const Report = ({opinion}) => {
                         <IconButton onClick={() => setOpen(false)}>
                             <CloseIcon/>
                         </IconButton>
-                        <Typography>Add opinion</Typography>
+                        <Typography>Report Comment</Typography>
                         <Button onClick={submitForm} className={classes.postBtn}>
                             Post
                         </Button>
@@ -101,29 +116,28 @@ const Report = ({opinion}) => {
                 </DialogTitle>
                 <DialogContent>
                     <Accordion className={classes.accordion}>
-                        <AccordionSummary
-                            className={classes.summary}
-                            expandIcon={<ExpandMoreIcon/>}
-                            aria-controls="panel1a-content"
-                            id="panel1a-header"
-                        >
-                            <Typography className={classes.heading}>What do you support?</Typography>
-                        </AccordionSummary>
+                        {/*<AccordionSummary*/}
+                        {/*    className={classes.summary}*/}
+                        {/*    expandIcon={<ExpandMoreIcon/>}*/}
+                        {/*    aria-controls="panel1a-content"*/}
+                        {/*    id="panel1a-header"*/}
+                        {/*>*/}
+                        {/*    <Typography className={classes.heading}>What do you support?</Typography>*/}
+                        {/*</AccordionSummary>*/}
                         <AccordionDetails>
                             <Box display={"flex"} flexDirection={"column"}>
-                                <Typography onClick={() => setSelected('Option 1')}>
-                                    Option 1
-                                </Typography>
-                                <Typography onClick={() => setSelected('Option 2')}>
-                                    Option 2
-                                </Typography>
+                                {reportOptions?.map((r, key)=>{
+                                    return <Typography onClick={() => setSelected(r)} key={key}>
+                                        {r}
+                                    </Typography>
+                                })}
                             </Box>
 
                         </AccordionDetails>
                     </Accordion>
-                    <Typography className={classes.opinion} variant={"h5"}>
-                        {selected?.length > 0 ? selected : 'your opinion'}
-                    </Typography>
+                    {/*<Typography className={classes.opinion} variant={"h5"}>*/}
+                    {/*    {selected?.length > 0 ? selected : 'your opinion'}*/}
+                    {/*</Typography>*/}
                 </DialogContent>
             </Dialog>
         </Box>

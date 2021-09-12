@@ -238,7 +238,7 @@ const Comment = ({reaction}) => {
     )
 }
 
-const CREATE_OPINION = gql`
+export const CREATE_OPINION = gql`
     mutation($post:ID, $kind:String, $data:String, $reaction:ID){
         createReaction(reactionInput:{
             post:$post,
