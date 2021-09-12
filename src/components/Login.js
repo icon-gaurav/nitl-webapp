@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import {validateEmail} from "../utils";
-import {Link, navigate} from "@reach/router"
+import {navigate} from "@reach/router"
 import {AuthContext} from "./context/authContext";
 import {
     Box,
@@ -35,16 +35,16 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '30px',
         lineHeight: '4rem',
         textAlign: 'center',
-        color: theme.palette.black.light0,
+        // color: theme.palette.black.light0,
     },
     subtitle: {
         fontSize: '17px',
         lineHeight: '1.7rem',
         fontWeight: '400',
-        color: theme.palette.black.light1,
+        // color: theme.palette.black.light1,
     },
     orText: {
-        color: theme.palette.light4,
+        // color: theme.palette.light4,
         fontWeight: '500',
     },
     inputContainer: {
@@ -71,10 +71,10 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '14px',
         fontWeight: '400',
         cursor: 'pointer',
-        color: theme.palette.black.light2,
+        // color: theme.palette.black.light2,
         transition: 'all .2s ease-in-out',
         '&:hover': {
-            color: theme.palette.black.light0,
+            // color: theme.palette.black.light0,
         }
     },
     signUpText: {
@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
     signUpLink: {
         cursor: 'pointer',
         '&:hover': {
-            color: theme.palette.primary.main,
+            // color: theme.palette.primary.main,
             textDecoration: 'underline',
         }
     },
@@ -199,14 +199,14 @@ export default function Login() {
                             variant={'contained'}>
                             {loading ? "Login..." : "Login"}
                         </Button>
-                        <Link to={"/register"}>
+
                             <Button
                                 className={classes.loginButton}
                                 color={'secondary'}
+                                onClick={()=>navigate('/register')}
                                 variant={'contained'}>
                                 Create New account
                             </Button>
-                        </Link>
 
                     </Box>
                 </Box>

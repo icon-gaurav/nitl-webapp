@@ -14,7 +14,7 @@ import {
     Typography,
 } from "@material-ui/core";
 import {gql, useMutation} from "@apollo/client";
-import {Link, navigate} from '@reach/router'
+import {navigate} from '@reach/router'
 
 const REGISTER_MUTATION = gql`
     mutation REGISTER_MUTATION($username:String!, $email:String!, $password:String!){
@@ -48,16 +48,16 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '30px',
         lineHeight: '4rem',
         textAlign: 'center',
-        color: theme.palette.black.light0,
+        // color: theme.palette.black.light0,
     },
     subtitle: {
         fontSize: '17px',
         lineHeight: '1.7rem',
         fontWeight: '400',
-        color: theme.palette.black.light1,
+        // color: theme.palette.black.light1,
     },
     orText: {
-        color: theme.palette.light4,
+        // color: theme.palette.light4,
         fontWeight: '500',
     },
     inputContainer: {
@@ -84,10 +84,10 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '14px',
         fontWeight: '400',
         cursor: 'pointer',
-        color: theme.palette.black.light2,
+        // color: theme.palette.black.light2,
         transition: 'all .2s ease-in-out',
         '&:hover': {
-            color: theme.palette.black.light0,
+            // color: theme.palette.black.light0,
         }
     },
     signUpText: {
@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
     signUpLink: {
         cursor: 'pointer',
         '&:hover': {
-            color: theme.palette.primary.main,
+            // color: theme.palette.primary.main,
             textDecoration: 'underline',
         }
     },
@@ -122,7 +122,7 @@ export default function Register() {
     const [isSubmitClicked, setIsSubmitClicked] = useState(false);
 
     const classes = useStyles();
-    const { isAuthenticated} = useContext(AuthContext);
+    const {isAuthenticated} = useContext(AuthContext);
 
     const handleSubmit = (e) => {
         e?.preventDefault();
@@ -255,14 +255,13 @@ export default function Register() {
                             variant={'contained'}>
                             {loading ? "Registering..." : "Register"}
                         </Button>
-                        <Link to={"/login"}>
-                            <Button
-                                className={classes.loginButton}
-                                color={'secondary'}
-                                variant={'contained'}>
-                                Login
-                            </Button>
-                        </Link>
+                        <Button
+                            className={classes.loginButton}
+                            onClick={() => navigate('/login')}
+                            color={'secondary'}
+                            variant={'contained'}>
+                            Login
+                        </Button>
                     </Box>
                 </Box>
             </form>
