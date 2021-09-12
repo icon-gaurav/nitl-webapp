@@ -160,8 +160,8 @@ const Opinions = () => {
         return <Typography>{error?.message}</Typography>
     }
     if (loading) {
-        return <Box display={"flex"} alignItems={"center"} justifyContent={"center"} minHeight={'100vh'}
-                    minWidth={'100vw'}><CircularProgress/>
+        return <Box display={"flex"} alignItems={"center"} justifyContent={"center"} minHeight={'100%'}
+                    minWidth={'100%'}><CircularProgress/>
         </Box>
     }
     return (
