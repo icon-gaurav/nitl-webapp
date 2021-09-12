@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import {Router} from "@reach/router"
+import {ApolloClient, ApolloProvider, createHttpLink, InMemoryCache,} from "@apollo/client";
+import AuthProvider from "./components/context/authContext";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import HomePage from "./components/HomePage";
+import NotificationProvider from "./components/context/notificationContext";
+
+const cache = new InMemoryCache({
+    typePolicies: {
+        Query: {
+            fields: {},
+        },
+    },
+});
+
+const uri = "http://localhost:3001/api/graphql";
+const httpLink = new createHttpLink({
+    uri,
+    credentials: "include",
+});
+
+// const client = new ApolloClient({
+//     link: httpLink,
+//     cache :new InMemoryCache({}),
+// });
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const client = new ApolloClient({
+        link: httpLink,
+        cache: new InMemoryCache({}),
+    });
+
+    return (
+        <NotificationProvider>
+            <ApolloProvider client={client}>
+                <AuthProvider>
+                    <Router style={{minHeight:'100vh'}}>
+                        <Login path="/login"/>
+                        <Register path="/register"/>
+                        <HomePage path="/"/>
+                    </Router>
+                </AuthProvider>
+
+            </ApolloProvider>
+        </NotificationProvider>
+    );
 }
 
 export default App;
